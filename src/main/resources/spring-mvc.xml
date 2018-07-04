@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+	
+	<!-- springmvc
+		1、只扫描@controller ，静态资源
+		2、视图解析器
+		3、MVC 注解驱动
+		4、文件上传解析multipart数据、CommonsMultipartResolver
+		
+		
+	
+	 -->
+	<!-- 只扫描@controller -->
+	<context:component-scan base-package="com.zzm" use-default-filters="false">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<!--  静态资源-->
+	<mvc:resources location="/resources/" mapping="/resources/**"/>
+	<mvc:resources location="/static/" mapping="/static/**"/>
+	
+	<!-- <mvc:default-servlet-handler/> -->
+	
+	
+	<!-- 视图解析器 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/"/>
+		<property name="suffix" value=".jsp"/>
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+	</bean>
+	
+	<!--  
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"></bean>
+	 
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"></bean>
+	-->
+	<!-- MVC 注解驱动  代替上面 Mapping adapter -->
+	<mvc:annotation-driven/>
+	
+	
+	<!-- 要吗自定义SpringMVC异常处理,入侵大， ，要吗使用SimpleMappingExceptionResolver-->
+	<!-- <bean class="com.zzm.exception.CustomExceptionResolver"></bean> -->
+	<!-- 全局异常处理，比如处理文件过大 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<!-- /WEB-INF/maxUploadExceeded.jsp -->
+		<property name="exceptionMappings">  
+   			<props>  
+        		<prop key="org.springframework.web.multipart.MaxUploadSizeExceededException"
+        		  >maxUploadExceeded</prop>  
+   			</props>  
+		</property>
+		<!-- 指定所有没有指定的异常,都跳转到该页面 -->
+		<!-- /WEB-INF/error.jsp -->
+		<property name="defaultErrorView" value="error"  ></property>
+	</bean>
+	
+	<!-- 文件上传解析multipart数据 -->
+	<bean id="multipartResolver"
+	 class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="1048576"></property><!-- 1024*1024=1M -->
+		<property name="defaultEncoding" value="utf-8"></property>
+	</bean>
+	
+	
+	<!-- 拦截器 -->
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			自定义拦截器
+			<mvc:mapping path="/**"/>
+			<bean class="com.zzm.interceptor.MyInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+	
+	
+	
+</beans>

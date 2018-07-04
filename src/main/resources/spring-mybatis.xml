@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	
+	<!-- sessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 如果sqlSessionFactory配置在主配置文件中，想加载mybatis 配置文件，需要指定配置文件 -->
+		<!-- <property name="configLocation" value="classpath*:spring-mybatis.xml"></property> -->
+		<!-- mapperLocations 指定映射文件位置 -->
+		<property name="mapperLocations" value="classpath*:com/zzm/xml/**/*.xml" />
+		<property name="plugins">
+   		 <array>
+      	<bean class="com.github.pagehelper.PageInterceptor">
+	        <property name="properties">
+	          <!--使用下面的方式配置参数，一行配置一个 -->
+	          <value>
+	            params=value1
+	          </value>
+	        </property>
+      </bean>
+    </array>
+  </property>
+	</bean>
+	
+	<!-- 一个映射器代理 -->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+		<property name="mapperInterface" value="com.zzm.dao.ICustomerDao"></property>
+	</bean>  -->
+	
+	
+	<!-- 没有必要在 Spring 的 XML 配置文件中注册所有的映射器,直接扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.zzm.mapper"></property>
+		
+	</bean>
+	<!-- 效果一样 -->
+	<!-- <mybatis-spring:scan base-package="com.zzm.mapper"/> -->
+
+
+</beans>

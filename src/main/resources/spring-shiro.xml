@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+	
+	<!-- spring+shiro -->
+	
+	<!-- 
+		1、securityManager
+		2、lifecycleBeanPostProcessor；
+		      使IOC容器shiro注解生效，必须在lifecycleBeanPostProcessor之后生效
+		3、ShiroFilterFactoryBean，配置那些页面受保护，和访问这些页面需要的权限
+	 -->
+	<!-- web.xml filter-name="shiroFilter" -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<property name="securityManager" ref="securityManager"/>
+		
+		<!-- 配置那些页面受保护，和访问这些页面需要的权限 -->
+		<property name="filterChainDefinitions">
+	        <value>
+	            /favicon.ico = anon
+	            /captcha.jpg = anon
+	            /static/** = anon
+	            /resources/** = anon
+	            /login.jsp = anon
+	            /index.jsp = anon
+	            /logout = logout
+	            /admin/** = authc, roles[admin]
+	            /** = anon
+	        </value>
+    	</property>
+	
+	</bean>
+	
+	<!-- DefaultWebSecurityManager 默认securityManager -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<!--  -->
+		<property name="realm" ref="jdbcRealm"></property>
+		<property name="cacheManager" ref="ehCacheManager"></property>
+	</bean>
+	
+	<bean id="jdbcRealm" class="com.zzm.shiro.JdbcReam"></bean>
+	
+	<!--cacheManager 缓存  -->
+	<bean id="ehCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+		<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"></property>
+	</bean>
+	
+	<!-- 让IOC 容器调用特定时期调用shiro bean 方法 -->
+	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+	<!-- 使IOC容器shiro注解生效，必须在lifecycleBeanPostProcessor之后生效  -->
+	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" 
+		depends-on="lifecycleBeanPostProcessor">
+	</bean>
+	<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    	<property name="securityManager" ref="securityManager"/>
+	</bean>
+
+</beans>

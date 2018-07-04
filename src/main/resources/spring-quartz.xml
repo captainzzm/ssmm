@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+	<!-- spring+quartz 整合 -->
+	 <!-- 
+	       Spring整合Quartz进行配置遵循下面的步骤：
+	       1：定义工作任务的jobDetail
+	       2：定义触发器Trigger，并将触发器与工作任务绑定
+	       3：定义调度器，并将Trigger注册到Scheduler
+	    -->
+	    
+	  <!-- 方法1：JobDetailFactoryBean定义任务jobDetail ,jobClass里面的类不用继承QuartzJobBean-->
+	  <bean id="JobDetail" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+	  		<property name="jobClass" value="com.zzm.task.MyJob"></property>
+	  		<property name="jobDataAsMap">
+	  			<map>
+	  				<entry key="timeout" value="5" ></entry>
+	  			</map>
+	  		</property>
+	  		<property name="durability" value="true"/>
+	  </bean>
+	  
+	  <!-- 方法2：JobDetailFactoryBean定义任务jobDetail，targetClass类是一个POJP类 -->
+	  <bean id="methodInvokingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	  		<property name="targetClass" value="com.zzm.task.MyJob2"></property>
+	  		<property name="targetMethod" value="doit"></property>
+	  		<property name="concurrent" value="false"/>
+	  		
+	  </bean>
+	    
+	   <!-- spring门面配置cronTrigger --> 
+	  <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+	  		<property name="jobDetail" ref="JobDetail"></property>
+	  		<property name="cronExpression" value="0/2 * * * * ?"></property>
+	  </bean>
+	  
+	  <!-- spring门面配置SimpleTrigger --> 
+	  <bean id="simpleTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+	  		<property name="jobDetail" ref="methodInvokingJobDetail"></property>
+	  		<!-- 10 seconds -->
+    		<property name="startDelay" value="10000"/>
+    		<!-- repeat every 50 seconds -->
+    		<property name="repeatInterval" value="50000"/>
+	  </bean>
+	    
+	  <!-- spring门面配置调度工厂 -->
+	  <bean id="schedulerFactory" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	  		<property name="triggers">
+	  			<list>
+	  				<ref bean="simpleTrigger"/>
+	  				<ref bean="cronTrigger"/>
+	  			</list>
+	  		</property>
+	  </bean>
+	    
+	
+
+</beans>
