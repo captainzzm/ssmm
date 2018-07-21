@@ -9,8 +9,8 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
 	
-	<!-- 扫描除@controller其他组价 -->
-	<context:component-scan base-package="com.zzm">
+	<!-- 扫描除了@controller其他组价 -->
+	<context:component-scan base-package="cn.com.zzm.ssmm">
 		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
 	</context:component-scan>
 	
@@ -20,7 +20,7 @@
 	    <property name="locations">    
 	        <list>    
 	            <value>classpath*:db.properties</value>
-	            <value>classpath*:email.prroperties</value>  
+	            <!-- <value>classpath*:email.prroperties</value>  --> 
 	        </list>    
 	    </property>    
 	</bean> 
@@ -52,6 +52,10 @@
 	<!-- 开启基于注解事务 -->
 	<tx:annotation-driven/>
 	
+	<!-- 在服务层配置事务特性 -->
+	
+    
+	
 	 
 	<!-- 引入mybatis配置 -->
 	<import resource="classpath*:spring-mybatis.xml"/>
@@ -62,10 +66,10 @@
 	<!-- <import resource="classpath*:spring-jms.xml"/> -->
 	
 	<!-- quartz -->
-	<import resource="classpath*:spring-quartz.xml"/>
+	<!-- <import resource="classpath*:spring-quartz.xml"/> -->
 	
 	<!-- email -->
-	<import resource="classpath*:spring-email.xml"/>
+	<!-- <import resource="classpath*:spring-email.xml"/> -->
 	
 	<!-- spring加载ehcache配置文件 -->
    <!-- <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  

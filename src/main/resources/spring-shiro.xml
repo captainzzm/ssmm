@@ -22,7 +22,8 @@
 	        <value>
 	            /favicon.ico = anon
 	            /captcha.jpg = anon
-	            /static/** = anon
+	            /statics/** = anon
+	            /resources/** = anon
 	            /resources/** = anon
 	            /login.jsp = anon
 	            /index.jsp = anon
@@ -41,7 +42,7 @@
 		<property name="cacheManager" ref="ehCacheManager"></property>
 	</bean>
 	
-	<bean id="jdbcRealm" class="com.zzm.shiro.JdbcReam"></bean>
+	<bean id="jdbcRealm" class="cn.com.zzm.ssmm.shiro.JdbcReam"></bean>
 	
 	<!--cacheManager 缓存  -->
 	<bean id="ehCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">

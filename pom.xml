@@ -59,6 +59,13 @@
 	    <scope>provided</scope>
 	</dependency>
 	
+	<dependency>
+	    <groupId>javax.servlet</groupId>
+	    <artifactId>jstl</artifactId>
+	    <version>1.2</version>
+	</dependency>
+	
+	
 	<!-- spring --> <!-- springMVC -->
 	<dependency>
 		<groupId>org.mybatis</groupId>
@@ -192,7 +199,7 @@
 			<configuration>
 				<path>/</path>
 				<charset>UTF-8</charset>
-				<port>80</port>
+				<port>8080</port>
 				<uriEncoding>UTF-8</uriEncoding>
 			</configuration>
 		</plugin>
