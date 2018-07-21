@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>testEditer</title>
+<script charset="utf-8" src="${ctx}/statics/jquery-1.9.1.min.js"></script>
+<script charset="utf-8" src="${ctx}/statics/editor/kindeditor-all-min.js"></script>
+<script charset="utf-8" src="${ctx}/statics/editor/lang/zh-CN.js"></script>
+>
+<script>
+        KindEditor.ready(function(K) {
+                window.editor = K.create('#editor_id');
+        });
+        
+        $(document).ready(function(){
+        	 $("#aaa").click(function(){
+        		editor.sync();
+             	alert($("#editor_id").val());
+             });
+        });
+       
+        
+</script>
+
+</head>
+<body>
+<textarea id="editor_id" name="content" style="width:700px;height:300px;">
+
+</textarea>
+
+<p id="aaa">弹出值</p>
+</body>
+</html>

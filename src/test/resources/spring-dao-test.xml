@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+	
+	<!-- 扫描除@respository组件-->
+	<context:component-scan base-package="com.zzm.dao">
+	</context:component-scan>
+	
+	<!-- 数据库配置文件 -->
+	<!-- <context:property-placeholder location="classpath*:db.properties"/> 报错-->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">    
+	    <property name="locations">    
+	        <list>    
+	            <value>classpath*:db.properties</value> 
+	        </list>    
+	    </property>    
+	</bean> 
+	
+	<!-- 数据源 -->
+	 <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+ 		 <property name="driverClass" value="${driver}"/>  
+         <property name="jdbcUrl" value="${url}"/>
+ 		 <property name="user" value="${username}"/>
+ 		 <property name="password" value="${password}"/>
+ 		 <!--连接池中保留的最大连接数。默认值: 15 -->   
+       	<property name="maxPoolSize" value="20"/>  
+      	 <!-- 连接池中保留的最小连接数，默认为：3-->  
+       	<property name="minPoolSize" value="2"/>  
+      	 <!-- 初始化连接池中的连接数，取值应在minPoolSize与maxPoolSize之间，默认为3-->  
+       	<property name="initialPoolSize" value="2"/>  
+       	<!--最大空闲时间，60秒内未使用则连接被丢弃。若为0则永不丢弃。默认值: 0 -->   
+      	<!-- <property name="maxIdleTime">60</property>   -->
+       	<!-- 当连接池连接耗尽时，客户端调用getConnection()后等待获取新连接的时间，超时后将抛出SQLException，如设为0则无限期等待。单位毫秒。默认: 0 -->   
+       	<property name="checkoutTimeout" value="3000"/>  
+       	<!--当连接池中的连接耗尽的时候c3p0一次同时获取的连接数。默认值: 3 -->   
+       	<property name="acquireIncrement" value="2"/> 
+	 </bean>
+	 
+	 <!--  事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- 开启基于注解事务 -->
+	<tx:annotation-driven/>
+	
+	 
+	<!-- sessionFactory -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 如果sqlSessionFactory配置在主配置文件中，想加载mybatis 配置文件，需要指定配置文件 -->
+		<!-- <property name="configLocation" value="classpath*:spring-mybatis.xml"></property> -->
+		<!-- mapperLocations 指定映射文件位置 -->
+		<property name="mapperLocations" value="classpath*:cn/com/zzm/ssmm/xml/*.xml" />
+		<!-- <property name="plugins">
+   		 <array>
+	      	<bean class="com.github.pagehelper.PageInterceptor">
+		        <property name="properties">
+		          使用下面的方式配置参数，一行配置一个
+		          <value>
+		            params=value1
+		          </value>
+		        </property>
+	      </bean>
+	    </array>
+		 </property> -->
+	</bean>
+	
+	<!-- 没有必要在 Spring 的 XML 配置文件中注册所有的映射器,直接扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.com.zzm.ssmm.dao"></property>
+		
+	</bean>
+
+
+
+</beans>
